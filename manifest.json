@@ -1,0 +1,32 @@
+{
+  "manifest_version": 2,
+  "name": "Anki Word Adder",
+  "version": "1.0.0",
+  "description": "Webページから単語を選択してAnkiに追加する拡張機能",
+  "permissions": [
+    "contextMenus",
+    "activeTab",
+    "storage",
+    "*://localhost/*",
+    "https://api.mymemory.translated.net/*"
+  ],
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ],
+  "icons": {
+    "48": "icons/icon.svg",
+    "96": "icons/icon.svg"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "anki-word-adder@example.com",
+      "strict_min_version": "91.0"
+    }
+  }
+}
