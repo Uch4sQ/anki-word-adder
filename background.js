@@ -23,8 +23,8 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
       selectionData.sourceLang
     );
 
-    // デッキ一覧を取得
-    const decks = await fetchDecks();
+    // デッキ一覧とノートタイプ一覧を並行取得
+    const [decks, models] = await Promise.all([fetchDecks(), fetchModels()]);
 
     // コンテンツスクリプトにモーダル表示を指示
     browser.tabs.sendMessage(tab.id, {
@@ -35,6 +35,7 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
         translation: translation,
         url: info.pageUrl,
         decks: decks,
+        models: models,
       },
     });
   } catch (err) {
@@ -82,13 +83,59 @@ async function fetchDecks() {
   }
 }
 
+// AnkiConnectからノートタイプ一覧を取得
+async function fetchModels() {
+  try {
+    const response = await fetch("http://localhost:8765", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "modelNames", version: 6 }),
+    });
+    const data = await response.json();
+    return data.result || [];
+  } catch (e) {
+    return [];
+  }
+}
+
+// AnkiConnectからノートタイプのフィールド名を取得
+async function fetchModelFields(modelName) {
+  try {
+    const response = await fetch("http://localhost:8765", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "modelFieldNames",
+        version: 6,
+        params: { modelName },
+      }),
+    });
+    const data = await response.json();
+    return data.result || [];
+  } catch (e) {
+    return [];
+  }
+}
+
 // AnkiConnectにノート追加
 async function addToAnki(noteData) {
+  // フィールド名を動的に取得
+  const fields = await fetchModelFields(noteData.model);
+
+  if (fields.length < 2) {
+    throw new Error("ノートタイプにフィールドが2つ以上必要です");
+  }
+
+  // 第1フィールド = 単語、第2フィールド = 翻訳+文脈+出典
   const backContent = [
     noteData.translation,
     noteData.context ? `\n\n<hr>\n<small>文脈: ${noteData.context}</small>` : "",
     noteData.url ? `\n<small>出典: ${noteData.url}</small>` : "",
   ].join("");
+
+  const noteFields = {};
+  noteFields[fields[0]] = noteData.word;
+  noteFields[fields[1]] = backContent;
 
   const response = await fetch("http://localhost:8765", {
     method: "POST",
@@ -99,11 +146,8 @@ async function addToAnki(noteData) {
       params: {
         note: {
           deckName: noteData.deck || "Default",
-          modelName: "Basic",
-          fields: {
-            Front: noteData.word,
-            Back: backContent,
-          },
+          modelName: noteData.model,
+          fields: noteFields,
           options: {
             allowDuplicate: false,
           },

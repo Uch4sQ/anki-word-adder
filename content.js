@@ -99,6 +99,13 @@ function showConfirmationModal(data) {
     )
     .join("");
 
+  // ノートタイプ選択肢のHTML生成
+  const modelOptions = (data.models || [])
+    .map(
+      (m) => `<option value="${escapeHtml(m)}">${escapeHtml(m)}</option>`
+    )
+    .join("");
+
   shadow.innerHTML = `
     <style>
       * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -284,6 +291,11 @@ function showConfirmationModal(data) {
         </div>
 
         <div class="field">
+          <label>ノートタイプ</label>
+          <select id="model">${modelOptions}</select>
+        </div>
+
+        <div class="field">
           <label>デッキ</label>
           <select id="deck">${deckOptions}</select>
         </div>
@@ -301,6 +313,7 @@ function showConfirmationModal(data) {
   const wordInput = shadow.getElementById("word");
   const contextInput = shadow.getElementById("context");
   const translationInput = shadow.getElementById("translation");
+  const modelSelect = shadow.getElementById("model");
   const deckSelect = shadow.getElementById("deck");
   const addBtn = shadow.getElementById("add");
   const cancelBtn = shadow.getElementById("cancel");
@@ -350,6 +363,7 @@ function showConfirmationModal(data) {
           word: word,
           context: contextInput.value.trim(),
           translation: translationInput.value.trim(),
+          model: modelSelect.value,
           deck: deckSelect.value,
           url: data.url || "",
         },
