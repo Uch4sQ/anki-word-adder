@@ -10,6 +10,10 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
   if (info.menuItemId !== "add-to-anki") return;
 
   try {
+    // 設定を読み込む
+    const result = await browser.storage.local.get("settings");
+    const settings = result.settings || {};
+
     // コンテンツスクリプトから選択テキスト+文脈を取得
     const selectionData = await browser.tabs.sendMessage(tab.id, {
       action: "getSelection",
@@ -17,14 +21,21 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
 
     if (!selectionData || !selectionData.word) return;
 
-    // 翻訳を取得
-    const translation = await fetchTranslation(
-      selectionData.word,
-      selectionData.sourceLang
-    );
+    // 翻訳を取得（自動翻訳が有効な場合のみ）
+    let translation = "";
+    if (settings.autoTranslate !== false) {
+      translation = await fetchTranslation(
+        selectionData.word,
+        selectionData.sourceLang
+      );
+    }
 
     // デッキ一覧とノートタイプ一覧を並行取得
     const [decks, models] = await Promise.all([fetchDecks(), fetchModels()]);
+
+    // デフォルトデッキとモデルを設定から取得
+    const defaultDeck = settings.defaultDeck || "Default";
+    const defaultModel = settings.defaultModel || (models.length > 0 ? models[0] : "Basic");
 
     // コンテンツスクリプトにモーダル表示を指示
     browser.tabs.sendMessage(tab.id, {
@@ -36,6 +47,10 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
         url: info.pageUrl,
         decks: decks,
         models: models,
+        sourceLang: selectionData.sourceLang,
+        defaultDeck: defaultDeck,
+        defaultModel: defaultModel,
+        settings: settings,
       },
     });
   } catch (err) {

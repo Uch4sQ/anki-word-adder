@@ -91,239 +91,203 @@ function showConfirmationModal(data) {
 
   const shadow = host.attachShadow({ mode: "closed" });
 
-  // デッキ選択肢のHTML生成
-  const deckOptions = (data.decks || ["Default"])
-    .map(
-      (d) =>
-        `<option value="${escapeHtml(d)}" ${d === "Default" ? "selected" : ""}>${escapeHtml(d)}</option>`
-    )
-    .join("");
-
-  // ノートタイプ選択肢のHTML生成
-  const modelOptions = (data.models || [])
-    .map(
-      (m) => `<option value="${escapeHtml(m)}">${escapeHtml(m)}</option>`
-    )
-    .join("");
-
-  shadow.innerHTML = `
-    <style>
-      * { box-sizing: border-box; margin: 0; padding: 0; }
-
-      .overlay {
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        font-size: 14px;
-        color: #333;
-      }
-
-      .modal {
-        background: #fff;
-        border-radius: 12px;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        width: 420px;
-        max-width: 90vw;
-        max-height: 90vh;
-        overflow-y: auto;
-        padding: 24px;
-        animation: slideIn 0.2s ease-out;
-      }
-
-      @keyframes slideIn {
-        from { opacity: 0; transform: translateY(-20px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-
-      .title {
-        font-size: 18px;
-        font-weight: 700;
-        margin-bottom: 20px;
-        color: #1a1a1a;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .title::before {
-        content: "A";
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 28px; height: 28px;
-        background: #4a90d9;
-        color: white;
-        border-radius: 6px;
-        font-size: 14px;
-        font-weight: 800;
-      }
-
-      .field {
-        margin-bottom: 16px;
-      }
-
-      label {
-        display: block;
-        font-size: 12px;
-        font-weight: 600;
-        color: #666;
-        margin-bottom: 4px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-      }
-
-      input, textarea, select {
-        width: 100%;
-        padding: 10px 12px;
-        border: 1.5px solid #ddd;
-        border-radius: 8px;
-        font-size: 14px;
-        font-family: inherit;
-        color: #333;
-        background: #fafafa;
-        transition: border-color 0.15s, box-shadow 0.15s;
-        outline: none;
-      }
-
-      input:focus, textarea:focus, select:focus {
-        border-color: #4a90d9;
-        box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.15);
-        background: #fff;
-      }
-
-      textarea {
-        resize: vertical;
-        min-height: 60px;
-      }
-
-      .buttons {
-        display: flex;
-        gap: 10px;
-        margin-top: 20px;
-      }
-
-      button {
-        flex: 1;
-        padding: 10px 16px;
-        border: none;
-        border-radius: 8px;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background 0.15s, transform 0.1s;
-      }
-
-      button:active {
-        transform: scale(0.98);
-      }
-
-      .btn-cancel {
-        background: #f0f0f0;
-        color: #666;
-      }
-
-      .btn-cancel:hover {
-        background: #e0e0e0;
-      }
-
-      .btn-add {
-        background: #4a90d9;
-        color: #fff;
-      }
-
-      .btn-add:hover {
-        background: #3a7bc8;
-      }
-
-      .btn-add:disabled {
-        background: #a0c4e8;
-        cursor: not-allowed;
-      }
-
-      .status {
-        margin-top: 12px;
-        padding: 10px;
-        border-radius: 8px;
-        font-size: 13px;
-        display: none;
-      }
-
-      .status.success {
-        display: block;
-        background: #e8f5e9;
-        color: #2e7d32;
-      }
-
-      .status.error {
-        display: block;
-        background: #fce4ec;
-        color: #c62828;
-      }
-
-      .loading {
-        pointer-events: none;
-        opacity: 0.6;
-      }
-    </style>
-
-    <div class="overlay">
-      <div class="modal">
-        <div class="title">Ankiに追加</div>
-
-        <div class="field">
-          <label>単語</label>
-          <input type="text" id="word" value="${escapeHtml(data.word)}" />
-        </div>
-
-        <div class="field">
-          <label>文脈</label>
-          <textarea id="context" rows="2">${escapeHtml(data.context)}</textarea>
-        </div>
-
-        <div class="field">
-          <label>翻訳 / 意味</label>
-          <input type="text" id="translation" value="${escapeHtml(data.translation)}" />
-        </div>
-
-        <div class="field">
-          <label>ノートタイプ</label>
-          <select id="model">${modelOptions}</select>
-        </div>
-
-        <div class="field">
-          <label>デッキ</label>
-          <select id="deck">${deckOptions}</select>
-        </div>
-
-        <div class="buttons">
-          <button class="btn-cancel" id="cancel">キャンセル</button>
-          <button class="btn-add" id="add">追加</button>
-        </div>
-
-        <div class="status" id="status"></div>
-      </div>
-    </div>
+  // スタイル要素を作成
+  const style = document.createElement("style");
+  style.textContent = `
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    .overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.5); display: flex;
+      align-items: center; justify-content: center;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 14px; color: #333;
+    }
+    .modal {
+      background: #fff; border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      width: 420px; max-width: 90vw; max-height: 90vh;
+      overflow-y: auto; padding: 24px;
+      animation: slideIn 0.2s ease-out;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .title {
+      font-size: 18px; font-weight: 700; margin-bottom: 20px;
+      color: #1a1a1a; display: flex; align-items: center; gap: 8px;
+    }
+    .title::before {
+      content: "A"; display: inline-flex; align-items: center;
+      justify-content: center; width: 28px; height: 28px;
+      background: #4a90d9; color: white; border-radius: 6px;
+      font-size: 14px; font-weight: 800;
+    }
+    .field { margin-bottom: 16px; position: relative; }
+    .field-with-button { display: flex; gap: 8px; align-items: center; }
+    label {
+      display: block; font-size: 12px; font-weight: 600;
+      color: #666; margin-bottom: 4px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .speak-btn {
+      flex-shrink: 0; width: 40px; height: 40px;
+      background: #f0f0f0; border: none; border-radius: 8px;
+      cursor: pointer; display: flex; align-items: center;
+      justify-content: center; font-size: 18px;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .speak-btn:hover { background: #e0e0e0; }
+    .speak-btn:active { transform: scale(0.95); }
+    .speak-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    input, textarea, select {
+      width: 100%; padding: 10px 12px; border: 1.5px solid #ddd;
+      border-radius: 8px; font-size: 14px; font-family: inherit;
+      color: #333; background: #fafafa;
+      transition: border-color 0.15s, box-shadow 0.15s; outline: none;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: #4a90d9;
+      box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.15);
+      background: #fff;
+    }
+    textarea { resize: vertical; min-height: 60px; }
+    .buttons { display: flex; gap: 10px; margin-top: 20px; }
+    button {
+      flex: 1; padding: 10px 16px; border: none; border-radius: 8px;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+    }
+    button:active { transform: scale(0.98); }
+    .btn-cancel { background: #f0f0f0; color: #666; }
+    .btn-cancel:hover { background: #e0e0e0; }
+    .btn-add { background: #4a90d9; color: #fff; }
+    .btn-add:hover { background: #3a7bc8; }
+    .btn-add:disabled { background: #a0c4e8; cursor: not-allowed; }
+    .status {
+      margin-top: 12px; padding: 10px; border-radius: 8px;
+      font-size: 13px; display: none;
+    }
+    .status.success { display: block; background: #e8f5e9; color: #2e7d32; }
+    .status.error { display: block; background: #fce4ec; color: #c62828; }
+    .loading { pointer-events: none; opacity: 0.6; }
   `;
+  shadow.appendChild(style);
 
-  const wordInput = shadow.getElementById("word");
-  const contextInput = shadow.getElementById("context");
-  const translationInput = shadow.getElementById("translation");
-  const modelSelect = shadow.getElementById("model");
-  const deckSelect = shadow.getElementById("deck");
-  const addBtn = shadow.getElementById("add");
-  const cancelBtn = shadow.getElementById("cancel");
-  const statusEl = shadow.getElementById("status");
-  const modal = shadow.querySelector(".modal");
+  // DOM要素を構築
+  function createField(labelText, child) {
+    const field = document.createElement("div");
+    field.className = "field";
+    const lbl = document.createElement("label");
+    lbl.textContent = labelText;
+    field.appendChild(lbl);
+    field.appendChild(child);
+    return field;
+  }
 
-  // Escキーで閉じる
+  function createSelect(id, items, selectedValue) {
+    const sel = document.createElement("select");
+    sel.id = id;
+    for (const item of items) {
+      const opt = document.createElement("option");
+      opt.value = item;
+      opt.textContent = item;
+      if (item === selectedValue) opt.selected = true;
+      sel.appendChild(opt);
+    }
+    return sel;
+  }
+
+  const overlay = document.createElement("div");
+  overlay.className = "overlay";
+
+  const modalDiv = document.createElement("div");
+  modalDiv.className = "modal";
+
+  const title = document.createElement("div");
+  title.className = "title";
+  title.textContent = "Ankiに追加";
+  modalDiv.appendChild(title);
+
+  const wordEl = document.createElement("input");
+  wordEl.type = "text";
+  wordEl.id = "word";
+  wordEl.value = data.word || "";
+
+  const speakBtn = document.createElement("button");
+  speakBtn.type = "button";
+  speakBtn.className = "speak-btn";
+  speakBtn.textContent = "🔊";
+  speakBtn.title = "発音を聞く";
+
+  const wordContainer = document.createElement("div");
+  wordContainer.className = "field-with-button";
+  wordContainer.appendChild(wordEl);
+  wordContainer.appendChild(speakBtn);
+
+  modalDiv.appendChild(createField("単語", wordContainer));
+
+  const contextEl = document.createElement("textarea");
+  contextEl.id = "context";
+  contextEl.rows = 2;
+  contextEl.textContent = data.context || "";
+  modalDiv.appendChild(createField("文脈", contextEl));
+
+  const translationEl = document.createElement("input");
+  translationEl.type = "text";
+  translationEl.id = "translation";
+  translationEl.value = data.translation || "";
+  modalDiv.appendChild(createField("翻訳 / 意味", translationEl));
+
+  const modelSelectEl = createSelect("model", data.models || [], data.defaultModel || null);
+  modalDiv.appendChild(createField("ノートタイプ", modelSelectEl));
+
+  const deckSelectEl = createSelect("deck", data.decks || ["Default"], data.defaultDeck || "Default");
+  modalDiv.appendChild(createField("デッキ", deckSelectEl));
+
+  const buttons = document.createElement("div");
+  buttons.className = "buttons";
+
+  const cancelButton = document.createElement("button");
+  cancelButton.className = "btn-cancel";
+  cancelButton.id = "cancel";
+  cancelButton.textContent = "キャンセル";
+  buttons.appendChild(cancelButton);
+
+  const addButton = document.createElement("button");
+  addButton.className = "btn-add";
+  addButton.id = "add";
+  addButton.textContent = "追加";
+  buttons.appendChild(addButton);
+
+  modalDiv.appendChild(buttons);
+
+  const statusDiv = document.createElement("div");
+  statusDiv.className = "status";
+  statusDiv.id = "status";
+  modalDiv.appendChild(statusDiv);
+
+  overlay.appendChild(modalDiv);
+  shadow.appendChild(overlay);
+
+  const wordInput = wordEl;
+  const contextInput = contextEl;
+  const translationInput = translationEl;
+  const modelSelect = modelSelectEl;
+  const deckSelect = deckSelectEl;
+  const addBtn = addButton;
+  const cancelBtn = cancelButton;
+  const statusEl = statusDiv;
+  const modal = modalDiv;
+
+  // Escキーで閉じる、Enterキーで追加
   const onKeydown = (e) => {
     if (e.key === "Escape") {
       cleanup();
+    }
+    if (e.key === "Enter" && !e.shiftKey && !addBtn.disabled) {
+      e.preventDefault();
+      addBtn.click();
     }
   };
   document.addEventListener("keydown", onKeydown);
@@ -339,6 +303,24 @@ function showConfirmationModal(data) {
     document.removeEventListener("keydown", onKeydown);
     host.remove();
   }
+
+  // 発音
+  speakBtn.addEventListener("click", () => {
+    const word = wordInput.value.trim();
+    if (!word) return;
+
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(word);
+
+      // 言語を自動検出（ページの言語 or data.sourceLang）
+      const lang = data.sourceLang || "en";
+      utterance.lang = lang === "ja" ? "ja-JP" : "en-US";
+      utterance.rate = 0.9;
+
+      window.speechSynthesis.speak(utterance);
+    }
+  });
 
   // キャンセル
   cancelBtn.addEventListener("click", cleanup);
@@ -357,11 +339,16 @@ function showConfirmationModal(data) {
     modal.classList.add("loading");
 
     try {
+      // 文脈内の単語をハイライト（設定で有効な場合）
+      const context = contextInput.value.trim();
+      const shouldHighlight = !data.settings || data.settings.highlightWord !== false;
+      const highlightedContext = shouldHighlight ? highlightWordInContext(context, word) : context;
+
       await browser.runtime.sendMessage({
         action: "addToAnki",
         data: {
           word: word,
-          context: contextInput.value.trim(),
+          context: highlightedContext,
           translation: translationInput.value.trim(),
           model: modelSelect.value,
           deck: deckSelect.value,
@@ -394,6 +381,11 @@ function showConfirmationModal(data) {
   document.body.appendChild(host);
   translationInput.focus();
   translationInput.select();
+
+  // 自動発音（設定で有効な場合）
+  if (data.settings && data.settings.autoSpeak && wordInput.value.trim()) {
+    setTimeout(() => speakBtn.click(), 300);
+  }
 }
 
 // 通知を表示（簡易版）
@@ -415,6 +407,17 @@ function showNotification(message, isError) {
   document.body.appendChild(el);
 
   setTimeout(() => el.remove(), 3000);
+}
+
+// 文脈内の単語をハイライト
+function highlightWordInContext(context, word) {
+  if (!context || !word) return context;
+
+  // 大文字小文字を区別せずに単語を検索してハイライト
+  const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const regex = new RegExp(`(${escapedWord})`, "gi");
+
+  return context.replace(regex, "<b>$1</b>");
 }
 
 // HTMLエスケープ
