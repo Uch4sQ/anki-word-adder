@@ -8,7 +8,8 @@
     "activeTab",
     "storage",
     "*://localhost/*",
-    "https://api.mymemory.translated.net/*"
+    "https://api.mymemory.translated.net/*",
+    "https://api.dictionaryapi.dev/*"
   ],
   "background": {
     "scripts": ["background.js"]
@@ -26,6 +27,14 @@
   "options_ui": {
     "page": "options.html",
     "open_in_tab": true
+  },
+  "commands": {
+    "add-to-anki-shortcut": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+A"
+      },
+      "description": "選択したテキストをAnkiに追加"
+    }
   },
   "browser_specific_settings": {
     "gecko": {

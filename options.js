@@ -5,6 +5,8 @@ const DEFAULT_SETTINGS = {
   autoTranslate: true,
   autoSpeak: false,
   highlightWord: true,
+  useDictionary: true,
+  captureScreenshot: false,
   darkMode: false,
 };
 
@@ -19,6 +21,8 @@ async function loadSettings() {
     document.getElementById("autoTranslate").checked = settings.autoTranslate !== false;
     document.getElementById("autoSpeak").checked = settings.autoSpeak === true;
     document.getElementById("highlightWord").checked = settings.highlightWord !== false;
+    document.getElementById("useDictionary").checked = settings.useDictionary !== false;
+    document.getElementById("captureScreenshot").checked = settings.captureScreenshot === true;
     document.getElementById("darkMode").checked = settings.darkMode === true;
   } catch (err) {
     console.error("設定の読み込みに失敗:", err);
@@ -33,6 +37,8 @@ async function saveSettings() {
     autoTranslate: document.getElementById("autoTranslate").checked,
     autoSpeak: document.getElementById("autoSpeak").checked,
     highlightWord: document.getElementById("highlightWord").checked,
+    useDictionary: document.getElementById("useDictionary").checked,
+    captureScreenshot: document.getElementById("captureScreenshot").checked,
     darkMode: document.getElementById("darkMode").checked,
   };
 

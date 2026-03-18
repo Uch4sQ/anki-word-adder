@@ -1,5 +1,5 @@
-web-ext-artifacts/
 node_modules/
-*.xpi
-*.zip
-.DS_Store
+web-ext-artifacts/
+*.log
+.web-ext-sign-api-key
+.env
