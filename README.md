@@ -1,304 +1,306 @@
 # Anki Word Adder - Firefox Extension
 
-Webページ上で単語を選択 → 右クリックするだけでAnkiにカードを追加できるFirefox拡張機能。
+> 🇯🇵 日本語版は [README.ja.md](README.ja.md) をご覧ください
 
-自動翻訳付きで、追加前に翻訳を確認・編集できます。
+A Firefox extension that lets you add words to Anki flashcards directly from web pages with just a right-click.
 
-## デモ
+Includes automatic translation and the ability to review/edit before adding.
 
-1. 単語を選択して右クリック → **「Ankiに追加」**
-2. モーダルで翻訳を確認・編集 → **「追加」**
+## Demo
 
-## 機能
+1. Select a word → Right-click → **"Add to Anki"**
+2. Review/edit translation in modal → Click **"Add"**
 
-### 基本機能
-- **右クリックメニュー**から即座にAnkiへ追加
-- **キーボードショートカット** - `Ctrl+Shift+A` で素早く追加
-- **文脈の自動抽出** - 単語を含む文を自動で取得
-- **自動翻訳** - MyMemory APIで翻訳を自動入力（無料・APIキー不要）
-- **編集可能** - 単語・文脈・翻訳をすべて追加前に編集できる
-- **デッキ選択** - Ankiの既存デッキから選んで追加
-- **言語自動検出** - ページの言語を検出し、日本語⇔英語を自動判定
+## Features
 
-### 拡張機能
-- **辞書API統合** - 英単語の場合、発音・品詞・定義・例文を自動取得（Free Dictionary API）
-- **画面キャプチャ** - 単語周辺のスクリーンショットを自動添付（設定で有効化）
-- **音声読み上げ** - 単語の発音を音声で確認
-- **文脈内ハイライト** - Ankiカード内で単語を太字表示
+### Core Features
+- **Right-click menu** - Add to Anki instantly
+- **Keyboard shortcut** - `Ctrl+Shift+A` for quick access
+- **Auto context extraction** - Automatically captures the sentence containing the word
+- **Auto translation** - Uses MyMemory API (free, no API key required)
+- **Fully editable** - Modify word, context, and translation before adding
+- **Deck selection** - Choose from your existing Anki decks
+- **Auto language detection** - Detects page language for Japanese ⇔ English translation
 
-### UX改善
-- **ローディング表示** - データ取得中のスピナーアニメーション
-- **成功アニメーション** - カード追加時のチェックマークエフェクト
-- **詳細なエラーメッセージ** - 問題の原因と解決方法を表示
-- **入力検証** - 必須項目の自動チェック
+### Advanced Features
+- **Dictionary API integration** - Automatically fetches pronunciation, part of speech, definitions, and examples for English words (Free Dictionary API)
+- **Screenshot capture** - Auto-attach screenshots of the page (optional, configurable)
+- **Text-to-speech** - Hear word pronunciation
+- **Context highlighting** - Bold words in Anki cards for emphasis
 
-## セットアップ
+### UX Enhancements
+- **Loading indicators** - Spinner animations during data fetch
+- **Success animations** - Checkmark effect when cards are added
+- **Detailed error messages** - Clear explanations of issues and solutions
+- **Input validation** - Auto-check required fields
 
-### 1. AnkiConnect をインストール
+## Setup
 
-[AnkiConnect](https://ankiweb.net/shared/info/2055492159) はAnkiにREST APIを追加するアドオンです。
+### 1. Install AnkiConnect
 
-1. Ankiを開く
-2. **ツール → アドオン → 新たにアドオンを取得**
-3. コード `2055492159` を入力してインストール
-4. Ankiを再起動
+[AnkiConnect](https://ankiweb.net/shared/info/2055492159) is an Anki add-on that provides a REST API.
 
-### 2. 拡張機能をFirefoxにインストール
+1. Open Anki
+2. **Tools → Add-ons → Get Add-ons**
+3. Enter code `2055492159` and install
+4. Restart Anki
 
-#### 開発用（一時的）
+### 2. Install the Firefox Extension
 
-1. Firefoxで `about:debugging#/runtime/this-firefox` を開く
-2. **「一時的なアドオンを読み込む」** をクリック
-3. このリポジトリの `manifest.json` を選択
+#### For Development (Temporary)
 
-> 一時的なアドオンはFirefox再起動時に消えます。
+1. Open `about:debugging#/runtime/this-firefox` in Firefox
+2. Click **"Load Temporary Add-on"**
+3. Select `manifest.json` from this repository
 
-#### 恒久的に使う場合
+> Temporary add-ons are removed when Firefox restarts.
 
-[web-ext](https://extensionworkshop.com/documentation/develop/getting-started-with-web-ext/) を使ってパッケージング・署名します:
+#### For Permanent Use
+
+Download the latest signed `.xpi` file from [Releases](https://github.com/Uch4sQ/anki-word-adder/releases) and drag it into Firefox.
+
+Alternatively, sign it yourself using [web-ext](https://extensionworkshop.com/documentation/develop/getting-started-with-web-ext/):
 
 ```bash
 npm install -g web-ext
 cd anki-word-adder
-web-ext build
+web-ext sign --api-key=YOUR_KEY --api-secret=YOUR_SECRET --channel=unlisted
 ```
 
-生成された `.zip` を [AMO](https://addons.mozilla.org/) に提出するか、`about:config` で `xpinstall.signatures.required` を `false` にして手動インストールできます。
+## Usage
 
-## 使い方
+### Basic Usage
 
-### 基本的な使い方
+1. **Start Anki** (AnkiConnect runs on `localhost:8765`)
+2. Select a word on any web page
+3. Right-click → **"Add to Anki"** or press `Ctrl+Shift+A`
+4. A modal will appear showing:
+   - **Word** - Selected text (editable)
+   - **Dictionary info** - For English words: pronunciation, definitions, examples (click to copy to translation field)
+   - **Context** - Sentence containing the word (auto-extracted, editable)
+   - **Translation/Meaning** - Auto-translated (editable, focused by default)
+   - **Screenshot** - Page capture (if enabled in settings)
+   - **Note Type** - Select from your Anki note types
+   - **Deck** - Select from your Anki decks
+5. Review/edit the translation and click **"Add"**
 
-1. **Ankiを起動**しておく（AnkiConnectが `localhost:8765` で待機します）
-2. Webページで覚えたい単語をドラッグして選択
-3. 右クリック → **「Ankiに追加」** または `Ctrl+Shift+A`
-4. モーダルが表示される:
-   - **単語** - 選択したテキスト（編集可能）
-   - **辞書情報** - 英単語の場合、発音・定義・例文が表示（クリックで翻訳フィールドに反映）
-   - **文脈** - 単語を含む文（自動抽出、編集可能）
-   - **翻訳/意味** - 自動翻訳（編集可能、ここにフォーカスが当たる）
-   - **スクリーンショット** - ページのキャプチャ（設定で有効化している場合）
-   - **ノートタイプ** - Ankiのノートタイプから選択
-   - **デッキ** - Ankiのデッキ一覧から選択
-5. 翻訳を確認・必要なら修正して **「追加」** をクリック
+### Keyboard Shortcuts
 
-### キーボードショートカット
+- `Ctrl+Shift+A` - Add selected text to Anki
+- `Enter` - Submit from within modal
+- `Esc` - Close modal
 
-- `Ctrl+Shift+A` - 選択中のテキストをAnkiに追加
-- `Enter` - モーダル内で追加を実行
-- `Esc` - モーダルを閉じる
+## Settings
 
-## 設定
+Click the extension icon → **Settings** to customize:
 
-拡張機能のアイコンをクリック → **設定** から以下をカスタマイズできます:
+- **Default Deck** - Deck name for new cards
+- **Default Note Type** - Note type to use
+- **Auto Translation** - Automatically fetch translations
+- **Auto Speech on Modal** - Read word aloud when modal opens
+- **Highlight Word in Context** - Bold the word in Anki cards
+- **Use Dictionary API** - Fetch dictionary data for English words
+- **Auto Screenshot Capture** - Automatically attach page screenshots
 
-- **デフォルトデッキ** - 新規カードを追加するデッキ名
-- **デフォルトノートタイプ** - 使用するノートタイプ
-- **自動翻訳** - 単語選択時に自動的に翻訳を取得
-- **モーダル表示時に自動発音** - モーダルを開いた際に単語を読み上げ
-- **文脈内の単語をハイライト** - Ankiカードで単語を太字表示
-- **辞書APIを使用** - 英単語の場合、辞書データを自動取得
-- **画面キャプチャを自動取得** - スクリーンショットを自動添付
+## Anki Card Structure
 
-## Ankiカードの内容
-
-| 面 | 内容 |
+| Side | Content |
 |---|---|
-| Front（表面） | 選択した単語 |
-| Back（裏面） | 翻訳 + 文脈 + 出典URL |
+| Front | Selected word |
+| Back | Translation + Context + Screenshot + Source URL |
 
-カードには `web-import` タグが自動で付与されます。
+Cards are automatically tagged with `web-import`.
 
-## 翻訳について
+## Translation
 
-- [MyMemory Translation API](https://mymemory.translated.net/) を使用（無料）
-- ページの `lang` 属性から言語を自動検出
-- 日本語ページの単語 → 英語に翻訳
-- それ以外 → 日本語に翻訳
-- 翻訳はあくまで参考値です。追加前に必ず確認・編集してください
+- Uses [MyMemory Translation API](https://mymemory.translated.net/) (free)
+- Auto-detects page language from `lang` attribute
+- Japanese pages → Translate to English
+- Other languages → Translate to Japanese
+- Always review translations before adding
 
-## トラブルシューティング
+## Troubleshooting
 
-### ❌ AnkiConnectに接続できません
+### ❌ Cannot connect to AnkiConnect
 
-**原因:**
-- Ankiが起動していない
-- AnkiConnectアドオンがインストールされていない
-- AnkiConnectが別のポートで動作している
+**Causes:**
+- Anki is not running
+- AnkiConnect add-on is not installed
+- AnkiConnect is running on a different port
 
-**解決方法:**
-1. Ankiを起動してください
-2. AnkiConnect アドオン（コード: `2055492159`）がインストールされているか確認
-3. Ankiを再起動してみてください
-4. ブラウザのコンソール（F12）でエラーを確認
+**Solutions:**
+1. Start Anki
+2. Verify AnkiConnect add-on (code: `2055492159`) is installed
+3. Restart Anki
+4. Check browser console (F12) for errors
 
-### ⚠️ 翻訳が取得できない
+### ⚠️ Translation fetch failed
 
-**原因:**
-- インターネット接続の問題
-- MyMemory APIのレート制限（1日1000リクエスト）
+**Causes:**
+- Internet connection issues
+- MyMemory API rate limit (1000 requests/day)
 
-**解決方法:**
-1. インターネット接続を確認
-2. 設定で「自動翻訳」をオフにして、手動で翻訳を入力
-3. 時間をおいてから再度試す
+**Solutions:**
+1. Check internet connection
+2. Disable "Auto Translation" in settings and enter translations manually
+3. Wait and retry later
 
-### 📋 デッキが表示されない
+### 📋 Decks not showing
 
-**原因:**
-- AnkiConnectの接続エラー
-- Ankiにデッキが1つも存在しない
+**Causes:**
+- AnkiConnect connection error
+- No decks exist in Anki
 
-**解決方法:**
-1. Ankiでデッキを作成
-2. AnkiConnectの設定を確認（ツール → アドオン → AnkiConnect → 設定）
-3. `webCorsOriginList` に `"http://localhost"` が含まれているか確認
+**Solutions:**
+1. Create a deck in Anki
+2. Check AnkiConnect settings (Tools → Add-ons → AnkiConnect → Config)
+3. Verify `webCorsOriginList` includes `"http://localhost"`
 
-### 🔁 重複エラーが出る
+### 🔁 Duplicate error
 
-**原因:**
-- 同じ単語が既にデッキに存在する
+**Causes:**
+- Word already exists in deck
 
-**解決方法:**
-1. Ankiで既存のカードを検索・編集
-2. 設定で重複を許可する場合: Anki → ツール → アドオン → AnkiConnect → 設定 → `allowDuplicate: true`
+**Solutions:**
+1. Search for and edit existing card in Anki
+2. To allow duplicates: Anki → Tools → Add-ons → AnkiConnect → Config → `allowDuplicate: true`
 
-### ⏱️ タイムアウトエラー
+### ⏱️ Timeout error
 
-**原因:**
-- ネットワーク接続が遅い
-- AnkiConnectの応答が遅い
+**Causes:**
+- Slow network connection
+- AnkiConnect slow to respond
 
-**解決方法:**
-1. ネットワーク接続を確認
-2. Ankiを再起動
-3. 単語を短くする、文脈を削減する
+**Solutions:**
+1. Check network connection
+2. Restart Anki
+3. Shorten word or reduce context
 
 ## FAQ
 
-### オフラインで使えますか？
+### Can I use it offline?
 
-部分的に使えます:
-- ✅ Ankiへのカード追加（AnkiはローカルPC上で動作）
-- ❌ 自動翻訳（MyMemory APIがインターネット接続必須）
-- ❌ 辞書API（Free Dictionary APIがインターネット接続必須）
+Partially:
+- ✅ Add cards to Anki (Anki runs locally)
+- ❌ Auto translation (requires internet for MyMemory API)
+- ❌ Dictionary API (requires internet for Free Dictionary API)
 
-オフラインで使う場合は、設定で「自動翻訳」と「辞書API」をオフにして、手動で翻訳を入力してください。
+For offline use, disable "Auto Translation" and "Dictionary API" in settings and enter translations manually.
 
-### 他の言語に対応していますか？
+### Does it support other languages?
 
-現在の対応:
-- **自動翻訳**: 日本語 ⇔ 英語（MyMemory APIは多言語対応ですが、この拡張機能ではこの2言語のみ）
-- **辞書API**: 英語のみ
+Current support:
+- **Auto Translation**: Japanese ⇔ English only (MyMemory API supports more, but this extension is limited to these two)
+- **Dictionary API**: English only
 
-将来的に多言語対応を検討しています。
+Multilingual support is planned for the future.
 
-### Chromeで使えますか？
+### Can I use it on Chrome?
 
-現在はFirefox専用です（Manifest V2）。Chrome版（Manifest V3）は別途対応が必要です。
+Currently Firefox-only (Manifest V2). Chrome support (Manifest V3) requires separate implementation.
 
-### モバイルで使えますか？
+### Does it work on mobile?
 
-Firefox for Androidで動作する可能性がありますが、以下の制限があります:
-- AnkiConnectはPC上のAnkiが必要（モバイル版Ankiでは動作しない）
-- モバイルとPCが同じネットワーク上にあり、AnkiConnectのホスト設定が必要
+May work on Firefox for Android, but with limitations:
+- AnkiConnect requires Anki on a PC (not mobile Anki)
+- Mobile and PC must be on the same network with AnkiConnect host configured
 
-推奨: PC版Firefoxでの使用
+Recommended: Use on PC Firefox
 
-### スクリーンショットのサイズが大きい
+### Screenshots are too large
 
-スクリーンショットはBase64エンコードされたPNG画像で、1枚あたり500KB〜2MBになります。
+Screenshots are Base64-encoded PNG images, typically 500KB-2MB each.
 
-**推奨:**
-- 設定で「画面キャプチャを自動取得」をオフにして、必要な場合のみ手動でスクリーンショットを追加
-- Ankiのメディアフォルダを定期的にクリーンアップ
+**Recommendations:**
+- Disable "Auto Screenshot Capture" in settings and add screenshots manually when needed
+- Periodically clean up Anki's media folder
 
-### カスタムノートタイプを使いたい
+### Can I use custom note types?
 
-この拡張機能は**最初の2フィールド**を使用します:
-- フィールド1: 単語
-- フィールド2: 翻訳 + 文脈 + スクリーンショット + 出典
+This extension uses the **first 2 fields** of your note type:
+- Field 1: Word
+- Field 2: Translation + Context + Screenshot + Source
 
-カスタムノートタイプを使う場合は、少なくとも2つのフィールドが必要です。設定で「デフォルトノートタイプ」に指定してください。
+Custom note types must have at least 2 fields. Specify your note type in "Default Note Type" setting.
 
-## ファイル構成
+## File Structure
 
 ```
 anki-word-adder/
-├── manifest.json      # 拡張機能マニフェスト (Manifest V2)
-├── background.js      # バックグラウンドスクリプト（API通信）
-├── content.js         # コンテンツスクリプト（UI・テキスト取得）
-├── options.html       # 設定ページUI
-├── options.js         # 設定ページロジック
+├── manifest.json      # Extension manifest (Manifest V2)
+├── background.js      # Background script (API communication)
+├── content.js         # Content script (UI, text extraction)
+├── options.html       # Settings page UI
+├── options.js         # Settings page logic
 ├── icons/
-│   └── icon.svg       # 拡張機能アイコン
-├── README.md
-└── CONTRIBUTING.md    # 貢献ガイド
+│   └── icon.svg       # Extension icon
+├── README.md          # English documentation
+├── README.ja.md       # Japanese documentation
+└── CONTRIBUTING.md    # Contribution guide
 ```
 
-## 開発
+## Development
 
-### ローカル開発
+### Local Development
 
-1. リポジトリをクローン:
+1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/anki-word-adder.git
+   git clone https://github.com/Uch4sQ/anki-word-adder.git
    cd anki-word-adder
    ```
 
-2. Firefoxで `about:debugging#/runtime/this-firefox` を開く
+2. Open `about:debugging#/runtime/this-firefox` in Firefox
 
-3. **「一時的なアドオンを読み込む」** → `manifest.json` を選択
+3. Click **"Load Temporary Add-on"** → Select `manifest.json`
 
-4. コードを編集後、拡張機能をリロード（リロードボタンまたは `Ctrl+R`）
+4. Edit code and reload extension (Reload button or `Ctrl+R`)
 
-### デバッグ
+### Debugging
 
-#### コンソールログ
+#### Console Logs
 
-- **バックグラウンドスクリプト**: `about:debugging` → 拡張機能の「検証」ボタン
-- **コンテンツスクリプト**: ページで `F12` → コンソールタブ
-- **設定ページ**: 設定ページで `F12` → コンソールタブ
+- **Background script**: `about:debugging` → Extension "Inspect" button
+- **Content script**: Open page → `F12` → Console tab
+- **Settings page**: Open settings → `F12` → Console tab
 
-#### よくあるデバッグ手順
+#### Common Debug Steps
 
-1. ブラウザコンソールでエラーメッセージを確認
-2. `console.log()` でデータフローを追跡
-3. AnkiConnectのレスポンスを確認（`about:debugging` → 拡張機能コンソール）
+1. Check browser console for error messages
+2. Use `console.log()` to trace data flow
+3. Check AnkiConnect responses (`about:debugging` → Extension console)
 
-### テスト
+### Testing
 
-現在、手動テストのみ実装されています。
+Currently manual testing only.
 
-**テストチェックリスト:**
+**Test Checklist:**
 
-- [ ] 英単語を選択 → 辞書情報が表示される
-- [ ] 日本語を選択 → 翻訳のみ表示される
-- [ ] スクリーンショット有効 → プレビュー表示
-- [ ] Anki未起動 → エラーメッセージ表示
-- [ ] 重複単語追加 → 重複エラー表示
-- [ ] `Ctrl+Shift+A` → モーダル表示
-- [ ] 設定変更 → 保存・反映される
-- [ ] 単語追加 → Ankiに正しく保存される
+- [ ] Select English word → Dictionary info appears
+- [ ] Select Japanese text → Translation only appears
+- [ ] Enable screenshot → Preview shows
+- [ ] Anki not running → Error message displays
+- [ ] Duplicate word → Duplicate error displays
+- [ ] `Ctrl+Shift+A` → Modal opens
+- [ ] Change settings → Settings persist
+- [ ] Add word → Saves correctly in Anki
 
-### リリース
+### Release
 
-1. バージョン番号を更新:
-   - `manifest.json` の `version`
+1. Update version number in `manifest.json`
 
-2. ビルド:
+2. Build:
    ```bash
    npm install -g web-ext
    web-ext build
    ```
 
-3. 生成された `.zip` を [Firefox Add-ons](https://addons.mozilla.org/) に提出
+3. Submit generated `.zip` to [Firefox Add-ons](https://addons.mozilla.org/)
 
-### 貢献
+### Contributing
 
-バグ報告・機能リクエスト・プルリクエストを歓迎します！
+Bug reports, feature requests, and pull requests are welcome!
 
-詳細は [CONTRIBUTING.md](CONTRIBUTING.md) を参照してください。
+See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 ## License
 
