@@ -3,3 +3,4 @@ web-ext-artifacts/
 *.log
 .web-ext-sign-api-key
 .env
+.amo-upload-uuid

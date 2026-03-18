@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Anki Word Adder",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Webページから単語を選択してAnkiに追加する拡張機能",
   "permissions": [
     "contextMenus",
