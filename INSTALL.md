@@ -1,85 +1,87 @@
-# Anki Word Adder - インストール方法
+# Anki Word Adder - Installation Guide
 
-## 必要なもの
+> 🇯🇵 日本語版: [INSTALL.ja.md](INSTALL.ja.md)
 
-1. **Firefox** (最新版推奨)
-2. **Anki** (デスクトップ版)
-3. **AnkiConnect** アドオン
+## Requirements
 
-## セットアップ手順
+1. **Firefox** (latest version recommended)
+2. **Anki** (desktop version)
+3. **AnkiConnect** add-on
 
-### 1. AnkiConnect をインストール
+## Setup Instructions
 
-1. Ankiを開く
-2. **ツール → アドオン → 新たにアドオンを取得**
-3. コード `2055492159` を入力してインストール
-4. Ankiを再起動
+### 1. Install AnkiConnect
 
-### 2. 拡張機能をインストール
+1. Open Anki
+2. **Tools → Add-ons → Get Add-ons**
+3. Enter code `2055492159` and install
+4. Restart Anki
 
-#### 方法A: ドラッグ&ドロップ（推奨）
+### 2. Install the Extension
 
-1. Firefoxを開く
-2. `anki_word_adder-1.1.0.xpi` ファイルをFirefoxウィンドウにドラッグ
-3. **「追加」** をクリック
-4. 完了！
+#### Method A: Drag & Drop (Recommended)
 
-#### 方法B: about:addons から
+1. Open Firefox
+2. Drag the `anki-word-adder-v1.2.0.xpi` file into the Firefox window
+3. Click **"Add"**
+4. Done!
 
-1. Firefox で `about:addons` を開く
-2. 歯車アイコン ⚙️ → **「ファイルからアドオンをインストール」**
-3. `anki_word_adder-1.1.0.xpi` を選択
-4. **「追加」** をクリック
+#### Method B: Via about:addons
 
-## 使い方
+1. Open `about:addons` in Firefox
+2. Click the gear icon ⚙️ → **"Install Add-on From File"**
+3. Select `anki-word-adder-v1.2.0.xpi`
+4. Click **"Add"**
 
-### 基本的な使い方
+## Usage
 
-1. **Ankiを起動**しておく
-2. Webページで覚えたい単語を選択
-3. 右クリック → **「Ankiに追加」** または `Ctrl+Shift+A`
-4. モーダルで翻訳・定義を確認
-5. **「追加」** をクリック
+### Basic Usage
 
-### 機能
+1. **Start Anki**
+2. Select a word on any web page
+3. Right-click → **"Add to Anki"** or press `Ctrl+Shift+A`
+4. Review translation and definitions in the modal
+5. Click **"Add"**
 
-- **自動翻訳**: 日本語 ⇔ 英語
-- **辞書API**: 英単語の発音・定義・例文を自動取得
-- **文脈抽出**: 単語を含む文を自動で取得
-- **画面キャプチャ**: オプションでスクリーンショット添付
-- **キーボードショートカット**: `Ctrl+Shift+A`
+### Features
 
-### 設定
+- **Auto Translation**: Japanese ⇔ English
+- **Dictionary API**: Automatic pronunciation, definitions, and examples for English words
+- **Context Extraction**: Automatically captures the sentence containing the word
+- **Screenshot Capture**: Optional screenshot attachment
+- **Keyboard Shortcut**: `Ctrl+Shift+A`
 
-拡張機能アイコンをクリック → **設定** から以下をカスタマイズ:
+### Settings
 
-- デフォルトデッキ
-- デフォルトノートタイプ
-- 自動翻訳 ON/OFF
-- 辞書API ON/OFF
-- 画面キャプチャ ON/OFF
+Click the extension icon → **Settings** to customize:
 
-## トラブルシューティング
+- Default deck
+- Default note type
+- Auto translation ON/OFF
+- Dictionary API ON/OFF
+- Screenshot capture ON/OFF
 
-### ❌ AnkiConnectに接続できません
+## Troubleshooting
 
-- Ankiが起動しているか確認
-- AnkiConnect アドオン（コード: `2055492159`）がインストールされているか確認
-- Ankiを再起動
+### ❌ Cannot connect to AnkiConnect
 
-### 翻訳が取得できない
+- Verify Anki is running
+- Verify AnkiConnect add-on (code: `2055492159`) is installed
+- Restart Anki
 
-- インターネット接続を確認
-- 設定で「自動翻訳」をオフにして、手動で翻訳を入力
+### Translation fetch failed
 
-### その他の問題
+- Check internet connection
+- Disable "Auto Translation" in settings and enter translations manually
 
-詳しくは [README.md](README.md) の「トラブルシューティング」セクションを参照してください。
+### Other Issues
 
-## ライセンス
+For more details, see the "Troubleshooting" section in [README.md](README.md).
+
+## License
 
 MIT License
 
 ---
 
-**楽しい単語学習を！** 🎉
+**Happy learning!** 🎉
